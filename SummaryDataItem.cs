@@ -2,7 +2,8 @@
 {
     internal class SummaryDataItem
     {
-        public String GroupName { get; set; }
-        public float GroupSumm { get; set; }
+        public string BuildingType { get; set; }
+        public float TotalPrice { get; set; }
+        public int ObjectCount { get; set; }
     }
 }

@@ -2,14 +2,13 @@
 {
     internal class RawDataItem
     {
-        public String name { get; set; }
-        public int Group { get; set; }
-        public String Part { get; set; }
+        public string BuildingType { get; set; }
+        public int RoomCount { get; set; }
+        public float Area { get; set; }
         public float Price { get; set; }
-        public float Count { get; set; }
-        public float Summ
+        public float PricePerSquareMeter
         {
-            get { return Count * Price; }
+            get { return Area > 0 ? Price / Area : 0; }
         }
     }
 }

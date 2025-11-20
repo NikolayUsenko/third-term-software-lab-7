@@ -10,33 +10,31 @@ namespace software_lab7
             {
                 if (rawdata == null) return false;
                 else return true;
-
-
             }
         }
+
         private List<RawDataItem> rawdata;
         private List<SummaryDataItem> sumdata;
-        private char devider = '%';
+        private char devider = '*';
         public DataStorage() { }
 
-        private bool InitData(String datapath)
+        private bool InitData(string datapath)
         {
             rawdata = new List<RawDataItem>();
 
             try
             {
                 StreamReader sr = new StreamReader(datapath, Encoding.UTF8);
-                String line;
+                string line;
                 while ((line = sr.ReadLine()) != null)
                 {
                     string[] items = line.Split(devider);
                     var item = new RawDataItem()
                     {
-                        name = items[0].Trim(),
-                        Part = items[1].Trim(),
-                        Group = Convert.ToInt32(items[2].Trim()),
-                        Price = Convert.ToSingle(items[3].Trim()),
-                        Count = Convert.ToSingle(items[4].Trim())
+                        BuildingType = items[0].Trim(),
+                        RoomCount = Convert.ToInt32(items[1].Trim()),
+                        Area = Convert.ToSingle(items[2].Trim()),
+                        Price = Convert.ToSingle(items[3].Trim())
                     };
                     rawdata.Add(item);
                 }
@@ -52,28 +50,27 @@ namespace software_lab7
 
         private void BuildSummary()
         {
-            Dictionary<int, float> tmp = new Dictionary<int, float>();
+            var summaryDict = new Dictionary<string, SummaryDataItem>();
+
             foreach (var item in rawdata)
             {
-                if (tmp.ContainsKey(item.Group))
+                if (summaryDict.ContainsKey(item.BuildingType))
                 {
-                    tmp[item.Group] += item.Summ;
+                    summaryDict[item.BuildingType].TotalPrice += item.Price;
+                    summaryDict[item.BuildingType].ObjectCount += 1;
                 }
                 else
                 {
-                    tmp[item.Group] = item.Summ;
+                    summaryDict[item.BuildingType] = new SummaryDataItem()
+                    {
+                        BuildingType = item.BuildingType,
+                        TotalPrice = item.Price,
+                        ObjectCount = 1
+                    };
                 }
             }
 
-            sumdata = new List<SummaryDataItem>();
-            foreach (var item in tmp)
-            {
-                sumdata.Add(new SummaryDataItem()
-                {
-                    GroupName = Utils.GetGroupByNumber(item.Key),
-                    GroupSumm = item.Value,
-                });
-            }
+            sumdata = summaryDict.Values.ToList();
         }
 
         public static DataStorage DataCreator(String path)
